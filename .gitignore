@@ -1,0 +1,16 @@
+*.pyo
+*.pyc
+*.~
+.idea
+*.log
+*.png
+.coverage
+.venv
+coverage
+build
+dist
+htmlcov
+easy-captcha.egg-info
+__pycache__
+.pytest_cache
+html
