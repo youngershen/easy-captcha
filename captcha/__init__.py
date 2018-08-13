@@ -5,3 +5,8 @@
 # CELL : 13811754531
 # WECHAT : 13811754531
 # WEBSITE : www.punkcoder.cn
+from .captcha import Captcha
+
+__all__ = [
+    'Captcha'
+]

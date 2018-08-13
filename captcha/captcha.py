@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw
 
 
 class Captcha:
-    font = ['']
+    font = None
     font_size = 30
     width = 60
     height = 30

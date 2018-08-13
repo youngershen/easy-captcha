@@ -22,7 +22,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 1 - Planning',
 
         # Indicate who your project is intended for
         'Intended Audience :: Developers',
@@ -34,12 +34,13 @@ setup(
         # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
-
-        'Framework :: Pillow'
+        'Framework :: Pillow',
+        'License :: OSI Approved :: MIT License',
+        'Topic :: Software Development :: Libraries :: Python Modules'
     ],
 
     # What does your project relate to?
-    keywords='a django request POST/GET data validator',
+    keywords='a very easy to use captcha image generator.',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
