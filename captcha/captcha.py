@@ -15,7 +15,13 @@ class Captcha:
     FILE_FORMAT_PNG = 'png'
     FILE_FORMAT_GIF = 'gif'
 
-    STYLE_SIMPLE = 'simple'
+    STYLE_ZERO = 0
+    STYLE_ONE = 1
+    STYLE_TWO = 2
+
+    DISTORTION_LEVEL_ZERO = 0
+    DISTORTION_LEVEL_ONE = 1
+    DISTORTION_LEVEL_TWO = 2
 
     IMAGE_MODE = 'L'
 
@@ -27,12 +33,12 @@ class Captcha:
     def get_object(self, text):
         return self._get_image(text)
 
-    def __init__(self, size, font_size, font='', file_format='png', style='simple'):
+    def __init__(self, size, font=None, file_format='png', style=0, distortion_level=0):
         self.size = size
-        self.font_size = font_size
         self.font = font
         self.file_format = file_format
         self.style = style
+        self.distortion_level = distortion_level
 
     def _get_image(self, text):
         image = Image.new(self.IMAGE_MODE, self.size)
@@ -50,8 +56,8 @@ class Captcha:
 
     @property
     def _xy(self):
-        pass
+        return (1, 2)
 
     @property
     def _color(self):
-        pass
+        return (3, 4)
