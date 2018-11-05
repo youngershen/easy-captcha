@@ -28,6 +28,6 @@ class CaptchaTestCase(TestCase):
 
     def test_make_sina_captcha(self):
         captcha = SinaCaptcha()
-        captcha = captcha.make_captcha(string='ABCD')
+        captcha = captcha.make_captcha(string='我草你妈')
         captcha.save('test-sina.png')
         self.assertTrue(captcha)

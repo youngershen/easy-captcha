@@ -32,10 +32,12 @@ class StringIsNoneError(BaseError):
 class Captcha:
     FONTS = [
         'RexBoldInline.otf',
-        'TruenoBdOlIt.otf'
+        'TruenoBdOlIt.otf',
+        'MicroSoftYaHei.ttf',
+        'MicroSoftYaHeiBold.ttf'
     ]
 
-    def make_captcha(self, string:str= None):
+    def make_captcha(self, string: str= None):
         raise NotImplementedError()
 
     def __init__(self):
@@ -150,7 +152,7 @@ class SinaCaptcha(Captcha):
         return captcha
 
     def _make_captcha(self, string, font_size):
-        font_name = 'TruenoBdOlIt.otf'
+        font_name = 'MicroSoftYaHei.ttf'
         font = self._load_font(name=font_name, size=font_size)
         char_images = self._make_char_images(string, font)
         image = self._make_image(char_images)
