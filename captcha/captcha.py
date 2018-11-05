@@ -1,14 +1,13 @@
 # PROJECT : easy-captcha
 # TIME : 18-7-30 下午4:00
-# AUTHOR : 申延刚 <Younger Shen>
+# AUTHOR : Younger Shen
 # EMAIL : younger.shen@hotmail.com
 # CELL : 13811754531
 # WECHAT : 13811754531
-# WEBSITE : www.punkcoder.cn
 import os
 import random
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont, ImageColor, ImageFilter
+from PIL import Image, ImageDraw, ImageFont, ImageColor
 
 
 class BaseError(Exception):
@@ -36,53 +35,33 @@ class Captcha:
         'TruenoBdOlIt.otf'
     ]
 
+    def make_captcha(self, string:str= None):
+        raise NotImplementedError()
+
     def __init__(self):
-        self.size = (100, 40)
+        self.size = (100, 50)
 
-    # https://login.sina.com.cn/cgi/pin.php
-    def make_sina_captcha(self, string: str=None, font_size: int=32, image_size: tuple=None):
-        captcha = self._make_sina_captcha(string, font_size)
-        size = image_size if image_size else self.size
-        # captcha = self._resize_image(captcha, size)
-        return captcha
+    def _make_char(self, char, font, color=None, rotate=0):
+        width, height, width_offset, height_offset = self._get_char_size(font, char)
+        image = Image.new(mode='RGBA', size=(width, height))
+        draw = ImageDraw.Draw(image)
+        color = color if color else self._rand_color
+        draw.text((width_offset, height_offset), char, font=font, fill=color)
 
-    def _make_sina_captcha(self, string, font_size):
-        font_name = 'TruenoBdOlIt.otf'
-        font = self._load_font(name=font_name, size=font_size)
-        char_images = self._make_sina_char_images(string, font)
-        image = self._make_sina_image(char_images, bg_color=self._rand_color)
+        if rotate is not None:
+            image = self._rotate(image, rotate)
+        else:
+            image = self._rand_rotate(image)
+
+        image = image.crop(image.getbbox())
         return image
 
-    @staticmethod
-    def _make_sina_image(images, bg_color=None):
-        width = 0
-        height = 0
-        for i in images:
-            width = width + i.size[0]
-            height = i.size[1] if height < i.size[1] else height
-
-        image = Image.new('RGB', (width, height), color=bg_color)
-
-        offset = 0
-        for i in images:
-            image.paste(i, (offset, 0), mask=i)
-            offset = offset + i.size[0]
-
+    def _make_background(self, width, height, color=None,):
+        color = color if color else self._rand_color
+        image = Image.new('RGB', (width, height), color=color)
         return image
 
-    def _make_sina_char_images(self, string, font):
-        ret = []
-        for c in string:
-            w, h, wo, ho = self._get_char_font_size(font, c)
-            image = Image.new(mode='RGBA', size=(w, h))
-            draw = ImageDraw.Draw(image)
-            draw.text((wo, ho), c, font=font, fill=self._rand_color)
-            # image = self._rand_rotate_image(image)
-            # image = self._rand_resize_image(image)
-            ret.append(image)
-        return ret
-
-    def _load_font(self, path=None, name=None, size=100, index=0, encoding='', layout_engine=None):
+    def _load_font(self, path=None, name=None, size=48, index=0, encoding='', layout_engine=None):
         font_path = self._get_font_path(path=path, name=name)
         font = ImageFont.truetype(font=font_path,
                                   size=size,
@@ -101,9 +80,9 @@ class Captcha:
                                layout_engine=layout_engine)
         return font
 
-    def _rand_rotate_image(self, image):
+    def _rand_rotate(self, image):
         angel = random.randint(0, 360)
-        image = self._rotate_image(image, angel)
+        image = self._rotate(image, angel)
         return image
 
     @property
@@ -120,7 +99,7 @@ class Captcha:
         return color
 
     @staticmethod
-    def _get_char_font_size(font, char):
+    def _get_char_size(font, char):
         size = font.getsize(char)
         width = size[0] * 2
         height = size[1] * 2
@@ -129,15 +108,15 @@ class Captcha:
         return width, height, width_offset, height_offset
 
     @staticmethod
-    def _rotate_image(image, angel=0):
+    def _rotate(image, angel=0):
         return image.rotate(angel)
 
     @staticmethod
-    def _resize_image(image, size=None):
-        return image.resize(size)
+    def _resize(image, size=None):
+        return image.resize(size, resample=Image.ANTIALIAS)
 
     @staticmethod
-    def _rand_resize_image(image):
+    def _rand_resize(image):
         import math
         ratio = random.random() + 0.5
         width = math.floor(image.size[0] * ratio)
@@ -150,9 +129,62 @@ class Captcha:
         path = os.path.dirname(__file__)
         return path
 
+    @staticmethod
+    def _rand_padding():
+        return random.randrange(10, 15)
+
     def _get_font_path(self, path: Path=None, name: str=None):
         path = path if path else Path(os.path.join(self._base_dir(), 'fonts', name))
         if path.exists():
             return str(path)
         else:
             raise FontNotFoundError()
+
+
+class SinaCaptcha(Captcha):
+    # https://login.sina.com.cn/cgi/pin.php
+    def make_captcha(self, string: str = None, font_size: int = 48, image_size: tuple = None):
+        captcha = self._make_captcha(string, font_size)
+        size = image_size if image_size else self.size
+        captcha = self._resize(captcha, size)
+        return captcha
+
+    def _make_captcha(self, string, font_size):
+        font_name = 'TruenoBdOlIt.otf'
+        font = self._load_font(name=font_name, size=font_size)
+        char_images = self._make_char_images(string, font)
+        image = self._make_image(char_images)
+        return image
+
+    def _make_image(self, images):
+        width = 0
+        height = 0
+        padding = self._rand_padding()
+
+        for i in images:
+            width = width + i.size[0]
+            height = i.size[1] if height < i.size[1] else height
+
+        width = width + padding * len(images) - 1
+        image = self._make_background(width, height, color=self._get_color(255, 255, 255))
+
+        offset = 0
+        for i in images:
+            image.paste(i, (offset, 0), mask=i)
+            offset = offset + i.size[0] + padding
+
+        return image
+
+    def _make_char_images(self, string, font):
+        images = map(lambda c: self._make_char(c, font), string)
+        return list(images)
+
+
+class SimpleCaptcha(Captcha):
+    def make_captcha(self, string: str= None):
+        pass
+
+
+class SimpleChineseCaptcha(Captcha):
+    def make_captcha(self, string: str= None):
+        pass

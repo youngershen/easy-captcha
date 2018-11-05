@@ -1,14 +1,13 @@
 # PROJECT : hhcms
 # TIME : 18-7-30 下午4:03
-# AUTHOR : 申延刚 <Younger Shen>
+# AUTHOR : Younger Shen
 # EMAIL : younger.shen@hotmail.com
 # CELL : 13811754531
 # WECHAT : 13811754531
-# WEBSITE : www.punkcoder.cn
 import os
 from pathlib import Path
 from unittest import TestCase
-from .captcha import Captcha
+from .captcha import Captcha, SinaCaptcha
 
 
 class CaptchaTestCase(TestCase):
@@ -28,5 +27,7 @@ class CaptchaTestCase(TestCase):
         self.assertTrue(font)
 
     def test_make_sina_captcha(self):
-        captcha = self.captcha.make_sina_captcha(string='ABCDEF')
-        captcha.save('aa.png')
+        captcha = SinaCaptcha()
+        captcha = captcha.make_captcha(string='ABCD')
+        captcha.save('test-sina.png')
+        self.assertTrue(captcha)
