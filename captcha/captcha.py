@@ -8,7 +8,7 @@
 import os
 import random
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont, ImageColor
+from PIL import Image, ImageDraw, ImageFont, ImageColor, ImageFilter
 
 
 class BaseError(Exception):
@@ -31,175 +31,102 @@ class StringIsNoneError(BaseError):
 
 
 class Captcha:
-    FONT_SIZE = 100
-    FONT_PADDING = 30
-
-    FMT_PNG = 0
-    FMT_JPEG = 1
-    FMT_GIF = 2
-    FMT_PIL_IMAGE = 3
-
     FONTS = [
         'RexBoldInline.otf',
         'TruenoBdOlIt.otf'
     ]
 
-    # https://passport.baidu.com/cgi-bin/genimage?tcGaf07c1c76092c1b5024d15be4301997fc63f4307bb017ec7
-    STYLE_BAIDU = 0
-    # https://login.sina.com.cn/cgi/pin.php
-    STYLE_SINA = 1
-
-    NOISE_0 = 0
-    NOISE_1 = 1
-    NOISE_2 = 2
-
     def __init__(self):
-        self.size = (200, 50)
-        self.fmt = self.FMT_PNG
-        self.style = self.STYLE_SINA
-        self.noise = self.NOISE_0
+        self.size = (100, 40)
 
-    def get_image(self,
-                  string: str=None,
-                  font_path: Path=None,
-                  font_name: str= None,
-                  size: tuple=None,
-                  fmt: int=None,
-                  style: int=None,
-                  noise: int=None):
+    # https://login.sina.com.cn/cgi/pin.php
+    def make_sina_captcha(self, string: str=None, font_size: int=32, image_size: tuple=None):
+        captcha = self._make_sina_captcha(string, font_size)
+        size = image_size if image_size else self.size
+        # captcha = self._resize_image(captcha, size)
+        return captcha
 
-        if string:
-            image = self._get_image(string=string,
-                                    font_path=font_path,
-                                    font_name=font_name,
-                                    size=size,
-                                    fmt=fmt,
-                                    style=style,
-                                    noise=noise)
-            return image
-        else:
-            raise StringIsNoneError()
-
-    def _get_image(self, **kwargs):
-        string = kwargs.get('string', '')
-        font_path = kwargs.get('font_path', None)
-        font_name = kwargs.get('font_name', None)
-        size = kwargs.get('size', self.size)
-        fmt = kwargs.get('fmt', self.fmt)
-        style = kwargs.get('style', self.style)
-        noise = kwargs.get('noise', self.noise)
-
-        if font_path or font_name:
-            font = self._load_font(path=font_path, name=font_name)
-        else:
-            font = None
-
-        if style == self.STYLE_BAIDU:
-            font = self._load_font(name='') if not font else font
-            return self._make_baidu(string, font, fmt, noise)
-
-        if style == self.STYLE_SINA:
-            font = self._load_font(name='RexBoldInline.otf') if not font else font
-            return self._make_sina(string, font, fmt, noise, size)
-
-    def _make_baidu(self, string, font, fmt, noise):
-        return ''
-
-    def _make_sina(self, string, font, fmt, noise, size):
-        bg_color = self._get_color('rgb(255,255,255)')
-        bg_size = self._get_backgound_size(font, string)
-        bg_image = self._make_background(size=bg_size, color=bg_color)
-        image = self._make_sina_image(string, bg_image, font)
-        image = image.resize(size=size)
+    def _make_sina_captcha(self, string, font_size):
+        font_name = 'TruenoBdOlIt.otf'
+        font = self._load_font(name=font_name, size=font_size)
+        char_images = self._make_sina_char_images(string, font)
+        image = self._make_sina_image(char_images, bg_color=self._rand_color)
         return image
 
-    def _make_sina_image(self, string, bg_image, font):
-        font_gap = 0
-        for i, char in enumerate(string):
-            font_color = self._get_rand_color()
-            char_image = self._make_char_image(char, font, font_color)
-            char_image = self._rand_rotate_image(char_image)
-            font_gap = font_gap if 0 == i else font_gap + char_image.size[0]
-            bg_image.paste(char_image, box=(font_gap, 0), mask=char_image)
+    @staticmethod
+    def _make_sina_image(images, bg_color=None):
+        width = 0
+        height = 0
+        for i in images:
+            width = width + i.size[0]
+            height = i.size[1] if height < i.size[1] else height
 
-        return bg_image
+        image = Image.new('RGB', (width, height), color=bg_color)
 
-    def _load_font(self, path=None, name=None, index=0, encoding='', layout_engine=None):
-        if path:
-            p = Path(path)
-            f = self._get_font_path(p)
-        elif name:
-            fp = self._get_font(name)
-            f = self._get_font_path(font=fp)
-        else:
-            f = self._load_rand_font()
+        offset = 0
+        for i in images:
+            image.paste(i, (offset, 0), mask=i)
+            offset = offset + i.size[0]
 
-        font = ImageFont.truetype(font=f,
-                                  size=self.FONT_SIZE,
+        return image
+
+    def _make_sina_char_images(self, string, font):
+        ret = []
+        for c in string:
+            w, h, wo, ho = self._get_char_font_size(font, c)
+            image = Image.new(mode='RGBA', size=(w, h))
+            draw = ImageDraw.Draw(image)
+            draw.text((wo, ho), c, font=font, fill=self._rand_color)
+            # image = self._rand_rotate_image(image)
+            # image = self._rand_resize_image(image)
+            ret.append(image)
+        return ret
+
+    def _load_font(self, path=None, name=None, size=100, index=0, encoding='', layout_engine=None):
+        font_path = self._get_font_path(path=path, name=name)
+        font = ImageFont.truetype(font=font_path,
+                                  size=size,
                                   index=index,
                                   encoding=encoding,
                                   layout_engine=layout_engine)
         return font
 
-    def _load_rand_font(self):
+    def _load_rand_font(self, index=0, encoding='', layout_engine=None):
         import random
         i = random.randrange(0, len(self.FONTS))
-        f = self._get_font(self.FONTS[i])
-        font = self._get_font_path(font=f)
+        name = self.FONTS[i]
+        font = self._load_font(name=name,
+                               index=index,
+                               encoding=encoding,
+                               layout_engine=layout_engine)
         return font
-
-    def _get_font(self, name):
-        path = os.path.join(self._base_dir(), 'fonts', name)
-        return Path(path)
 
     def _rand_rotate_image(self, image):
         angel = random.randint(0, 360)
         image = self._rotate_image(image, angel)
         return image
 
-    @staticmethod
-    def _get_rand_color():
+    @property
+    def _rand_color(self):
         r = random.randint(0, 255)
         g = random.randint(0, 255)
         b = random.randint(0, 255)
-        return 'rgb({R}, {G}, {B})'.format(R=r, G=g, B=b)
-
-    @staticmethod
-    def _get_color(color):
+        color = 'rgb({R}, {G}, {B})'.format(R=r, G=g, B=b)
         return ImageColor.getrgb(color)
 
     @staticmethod
-    def _make_background(size, color):
-        image = Image.new('RGBA', size=size, color=color)
-        return image
+    def _get_color(r, g, b):
+        color = 'rgb({R}, {G}, {B})'.format(R=r, G=g, B=b)
+        return color
 
-    def _add_random_line_to_background(self, image):
-        pass
-
-    def _add_dots_to_background(self, image):
-        pass
-
-    def _make_char_image(self, char, font, color):
-        size = self._get_font_size(font, char)
-        image = Image.new(mode='RGBA', size=size)
-        draw = ImageDraw.Draw(image)
-        draw.text((self.FONT_PADDING / 2, self.FONT_PADDING / 2), char, font=font, fill=color)
-        return image
-
-    def _get_font_size(self, font, char):
+    @staticmethod
+    def _get_char_font_size(font, char):
         size = font.getsize(char)
-        width = size[0] + self.FONT_PADDING
-        height = size[1] + self.FONT_PADDING
-        return width, height
-
-    def _get_backgound_size(self, font, string):
-        width = 0
-        height = 0
-        for c in string:
-            width = width + self._get_font_size(font, c)[0]
-            height = self._get_font_size(font, c)[1]
-
-        return width, height
+        width = size[0] * 2
+        height = size[1] * 2
+        width_offset = (width - size[0]) / 2
+        height_offset = (height - size[1]) / 2
+        return width, height, width_offset, height_offset
 
     @staticmethod
     def _rotate_image(image, angel=0):
@@ -210,13 +137,22 @@ class Captcha:
         return image.resize(size)
 
     @staticmethod
+    def _rand_resize_image(image):
+        import math
+        ratio = random.random() + 0.5
+        width = math.floor(image.size[0] * ratio)
+        height = math.floor(image.size[1] * ratio)
+        size = width, height
+        return image.resize(size)
+
+    @staticmethod
     def _base_dir():
         path = os.path.dirname(__file__)
         return path
 
-    @staticmethod
-    def _get_font_path(font: Path=None):
-        if font.exists():
-            return str(font)
+    def _get_font_path(self, path: Path=None, name: str=None):
+        path = path if path else Path(os.path.join(self._base_dir(), 'fonts', name))
+        if path.exists():
+            return str(path)
         else:
             raise FontNotFoundError()

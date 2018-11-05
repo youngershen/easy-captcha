@@ -24,20 +24,9 @@ class CaptchaTestCase(TestCase):
         font = self.captcha._load_font(name='RexBoldInline.otf')
         self.assertTrue(font)
 
-        font = self.captcha._load_font()
+        font = self.captcha._load_rand_font()
         self.assertTrue(font)
 
-    def test_make_char_image(self):
-        font = self.captcha._load_font(name='RexBoldInline.otf')
-        color = self.captcha._get_rand_color()
-        image = self.captcha._make_char_image('A', font, color)
-        image = self.captcha._rand_rotate_image(image)
-        image = image.resize(size=(100, 50))
-        self.assertTrue(image)
-        image.save('a.png')
-
-    def test_make_sina(self):
-        font = self.captcha._load_font(name='RexBoldInline.otf')
-        image = self.captcha._make_sina('ABCDEF2324DF', font, None, None, size=(200, 100))
-        self.assertTrue(image)
-        image.save('sina.png')
+    def test_make_sina_captcha(self):
+        captcha = self.captcha.make_sina_captcha(string='ABCDEF')
+        captcha.save('aa.png')
