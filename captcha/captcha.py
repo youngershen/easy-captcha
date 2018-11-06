@@ -118,6 +118,13 @@ class Captcha:
         image = self._rotate(image, angel)
         return image
 
+    def _make_char_images(self, string, font, color=None, rotate=None, resize=False, size=None):
+        if not string:
+            raise StringIsNoneError()
+        else:
+            images = map(lambda c: self._make_char(c, font, rotate=0, color=color, resize=resize, size=size), string)
+            return list(images)
+
     @property
     def _rand_color(self):
         r = random.randint(0, 255)
@@ -204,11 +211,6 @@ class SinaCaptcha(Captcha):
         image = self._composite_char_images(char_images, color=self._get_color(255, 255, 255))
         return image
 
-    def _make_char_images(self, string, font):
-        color = self._rand_color
-        images = map(lambda c: self._make_char(c, font, color=color, resize=True), string)
-        return list(images)
-
 
 class SimpleCaptcha(Captcha):
     FONT = 'AuxinMedium.otf'
@@ -224,10 +226,6 @@ class SimpleCaptcha(Captcha):
         char_images = self._make_char_images(string, font)
         image = self._composite_char_images(char_images, color=self._get_color(255, 255, 255))
         return image
-
-    def _make_char_images(self, string, font):
-        images = map(lambda c: self._make_char(c, font, rotate=0), string)
-        return list(images)
 
 
 class SimpleChineseCaptcha(SimpleCaptcha):
