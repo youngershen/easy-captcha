@@ -43,7 +43,7 @@ class Captcha:
     def __init__(self):
         self.size = (100, 50)
 
-    def _make_char(self, char, font, color=None, rotate=0):
+    def _make_char(self, char, font, color=None, rotate=None, resize=False, size=None):
         width, height, width_offset, height_offset = self._get_char_size(font, char)
         image = Image.new(mode='RGBA', size=(width, height))
         draw = ImageDraw.Draw(image)
@@ -54,6 +54,12 @@ class Captcha:
             image = self._rotate(image, rotate)
         else:
             image = self._rand_rotate(image)
+
+        if resize:
+            if size:
+                image = self._resize(image, size)
+            else:
+                image = self._rand_resize(image)
 
         image = image.crop(image.getbbox())
         return image
@@ -152,7 +158,7 @@ class SinaCaptcha(Captcha):
         return captcha
 
     def _make_captcha(self, string, font_size):
-        font_name = 'MicroSoftYaHei.ttf'
+        font_name = 'TruenoBdOlIt.otf'
         font = self._load_font(name=font_name, size=font_size)
         char_images = self._make_char_images(string, font)
         image = self._make_image(char_images)
@@ -178,7 +184,8 @@ class SinaCaptcha(Captcha):
         return image
 
     def _make_char_images(self, string, font):
-        images = map(lambda c: self._make_char(c, font), string)
+        color = self._rand_color
+        images = map(lambda c: self._make_char(c, font, color=color, resize=True), string)
         return list(images)
 
 
