@@ -7,7 +7,7 @@
 import os
 from pathlib import Path
 from unittest import TestCase
-from .captcha import Captcha, SinaCaptcha
+from .captcha import Captcha, SinaCaptcha, SimpleCaptcha, SimpleChineseCaptcha
 
 
 class CaptchaTestCase(TestCase):
@@ -33,4 +33,13 @@ class CaptchaTestCase(TestCase):
         self.assertTrue(captcha)
 
     def test_make_simple_captcha(self):
-        pass
+        captcha = SimpleCaptcha()
+        captcha = captcha.make_captcha(string='ABCD')
+        captcha.save('test-simple.png')
+        self.assertTrue(captcha)
+
+    def test_make_simple_chinese_captcha(self):
+        captcha = SimpleChineseCaptcha()
+        captcha = captcha.make_captcha(string='我爱中国')
+        captcha.save('test-simple-chinese.png')
+        self.assertTrue(captcha)

@@ -34,14 +34,39 @@ class Captcha:
         'RexBoldInline.otf',
         'TruenoBdOlIt.otf',
         'MicroSoftYaHei.ttf',
-        'MicroSoftYaHeiBold.ttf'
+        'MicroSoftYaHeiBold.ttf',
+        'AuxinMedium.otf'
     ]
+
+    CHARSET_NUMBER = 0
+    CHARSET_ALPHABET = 1
+    CHARSET_ASCII = 2
+    CHARSET_OTHER = 3
 
     def make_captcha(self, string: str= None):
         raise NotImplementedError()
 
     def __init__(self):
         self.size = (100, 50)
+
+    def _composite_char_images(self, images, color=None):
+        width = 0
+        height = 0
+        padding = self._rand_padding()
+
+        for i in images:
+            width = width + i.size[0]
+            height = i.size[1] if height < i.size[1] else height
+
+        width = width + padding * len(images) - 1
+        image = self._make_background(width, height, color=color)
+
+        offset = 0
+        for i in images:
+            image.paste(i, (offset, 0), mask=i)
+            offset = offset + i.size[0] + padding
+
+        return image
 
     def _make_char(self, char, font, color=None, rotate=None, resize=False, size=None):
         width, height, width_offset, height_offset = self._get_char_size(font, char)
@@ -141,6 +166,21 @@ class Captcha:
     def _rand_padding():
         return random.randrange(10, 15)
 
+    @staticmethod
+    def _noise_arcs(image, color=None):
+        size = image.size
+        draw = ImageDraw.Draw(image)
+        draw.arc([-20, -20, size[0], 20], 0, 295, fill=color)
+        draw.line([-20, 20, size[0] + 20, size[1] - 20], fill=color)
+        draw.line([-20, 0, size[0] + 20, size[1]], fill=color)
+
+    @staticmethod
+    def _noise_dots(image, color=None):
+        size = image.size
+        draw = ImageDraw.Draw(image)
+        for p in range(int(size[0] * size[1] * 0.1)):
+            draw.point((random.randint(0, size[0]), random.randint(0, size[1])), fill=color)
+
     def _get_font_path(self, path: Path=None, name: str=None):
         path = path if path else Path(os.path.join(self._base_dir(), 'fonts', name))
         if path.exists():
@@ -161,26 +201,7 @@ class SinaCaptcha(Captcha):
         font_name = 'TruenoBdOlIt.otf'
         font = self._load_font(name=font_name, size=font_size)
         char_images = self._make_char_images(string, font)
-        image = self._make_image(char_images)
-        return image
-
-    def _make_image(self, images):
-        width = 0
-        height = 0
-        padding = self._rand_padding()
-
-        for i in images:
-            width = width + i.size[0]
-            height = i.size[1] if height < i.size[1] else height
-
-        width = width + padding * len(images) - 1
-        image = self._make_background(width, height, color=self._get_color(255, 255, 255))
-
-        offset = 0
-        for i in images:
-            image.paste(i, (offset, 0), mask=i)
-            offset = offset + i.size[0] + padding
-
+        image = self._composite_char_images(char_images, color=self._get_color(255, 255, 255))
         return image
 
     def _make_char_images(self, string, font):
@@ -190,10 +211,24 @@ class SinaCaptcha(Captcha):
 
 
 class SimpleCaptcha(Captcha):
-    def make_captcha(self, string: str= None):
-        pass
+    FONT = 'AuxinMedium.otf'
+
+    def make_captcha(self, string: str = None, font_size: int = 48, image_size: tuple = None):
+        captcha = self._make_captcha(string, font_size)
+        size = image_size if image_size else self.size
+        captcha = self._resize(captcha, size)
+        return captcha
+
+    def _make_captcha(self, string, font_size):
+        font = self._load_font(name=self.FONT, size=font_size)
+        char_images = self._make_char_images(string, font)
+        image = self._composite_char_images(char_images, color=self._get_color(255, 255, 255))
+        return image
+
+    def _make_char_images(self, string, font):
+        images = map(lambda c: self._make_char(c, font, rotate=0), string)
+        return list(images)
 
 
-class SimpleChineseCaptcha(Captcha):
-    def make_captcha(self, string: str= None):
-        pass
+class SimpleChineseCaptcha(SimpleCaptcha):
+    FONT = 'MicroSoftYaHei.ttf'
