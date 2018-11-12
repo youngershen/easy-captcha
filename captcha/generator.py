@@ -29,7 +29,7 @@ class StringIsNoneError(BaseError):
     message = 'the captcha string is none.'
 
 
-class Captcha:
+class BaseGenerator:
     FONTS = [
         'RexBoldInline.otf',
         'TruenoBdOlIt.otf',
@@ -185,7 +185,7 @@ class Captcha:
     def _noise_dots(image, color=None):
         size = image.size
         draw = ImageDraw.Draw(image)
-        for p in range(int(size[0] * size[1] * 0.1)):
+        for _ in range(int(size[0] * size[1] * 0.1)):
             draw.point((random.randint(0, size[0]), random.randint(0, size[1])), fill=color)
 
     def _get_font_path(self, path: Path=None, name: str=None):
@@ -196,7 +196,7 @@ class Captcha:
             raise FontNotFoundError()
 
 
-class SinaCaptcha(Captcha):
+class SinaGenerator(BaseGenerator):
     # https://login.sina.com.cn/cgi/pin.php
     def make_captcha(self, string: str = None, font_size: int = 48, image_size: tuple = None):
         captcha = self._make_captcha(string, font_size)
@@ -212,7 +212,7 @@ class SinaCaptcha(Captcha):
         return image
 
 
-class SimpleCaptcha(Captcha):
+class SimpleGenerator(BaseGenerator):
     FONT = 'AuxinMedium.otf'
 
     def make_captcha(self, string: str = None, font_size: int = 48, image_size: tuple = None):
@@ -228,5 +228,5 @@ class SimpleCaptcha(Captcha):
         return image
 
 
-class SimpleChineseCaptcha(SimpleCaptcha):
+class SimpleChineseGenerator(SimpleGenerator):
     FONT = 'MicroSoftYaHei.ttf'

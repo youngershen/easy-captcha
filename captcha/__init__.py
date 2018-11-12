@@ -4,8 +4,3 @@
 # EMAIL : younger.shen@hotmail.com
 # CELL : 13811754531
 # WECHAT : 13811754531
-from .captcha import Captcha
-
-__all__ = [
-    'Captcha'
-]
