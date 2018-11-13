@@ -43,7 +43,7 @@ class BaseGenerator:
     CHARSET_ASCII = 2
     CHARSET_OTHER = 3
 
-    def make_captcha(self, string: str= None):
+    def make_captcha(self, string: str = None):
         raise NotImplementedError()
 
     def __init__(self):
@@ -68,12 +68,19 @@ class BaseGenerator:
 
         return image
 
-    def _make_char(self, char: str, font: ImageFont, color: ImageColor=None, rotate:int=None, resize:bool=False, size:tuple=None):
-        width, height, width_offset, height_offset = self._get_char_size(font, char)
-        image = Image.new(mode='RGBA', size=(width, height))
+    def _make_char(self,
+                   char: str,
+                   font: ImageFont,
+                   color: ImageColor = None,
+                   rotate: int = None,
+                   resize: bool = False,
+                   size: tuple = None):
+
+        w, h, wo, ho = self._get_char_size(font, char)
+        image = Image.new(mode='RGBA', size=(w, h))
         draw = ImageDraw.Draw(image)
         color = color if color else self._rand_color
-        draw.text((width_offset, height_offset), char, font=font, fill=color)
+        draw.text((wo, ho), char, font=font, fill=color)
 
         if rotate is not None:
             image = self._rotate(image, rotate)
@@ -89,12 +96,21 @@ class BaseGenerator:
         image = image.crop(image.getbbox())
         return image
 
-    def _make_background(self, width:int, height:int, color:ImageColor=None,):
+    def _make_background(self,
+                         width: int,
+                         height: int,
+                         color: ImageColor = None,):
         color = color if color else self._rand_color
         image = Image.new('RGB', (width, height), color=color)
         return image
 
-    def _load_font(self, path:Path=None, name:str=None, size:int=48, index:int=0, encoding:str='', layout_engine=None):
+    def _load_font(self,
+                   path: Path = None,
+                   name: str = None,
+                   size: int = 48,
+                   index: int = 0,
+                   encoding: str = '',
+                   layout_engine=None):
         font_path = self._get_font_path(path=path, name=name)
         font = ImageFont.truetype(font=font_path,
                                   size=size,
@@ -103,7 +119,10 @@ class BaseGenerator:
                                   layout_engine=layout_engine)
         return font
 
-    def _load_rand_font(self, index:int=0, encoding:str='', layout_engine=None):
+    def _load_rand_font(self,
+                        index: int = 0,
+                        encoding: str = '',
+                        layout_engine=None):
         import random
         i = random.randrange(0, len(self.FONTS))
         name = self.FONTS[i]
@@ -113,16 +132,27 @@ class BaseGenerator:
                                layout_engine=layout_engine)
         return font
 
-    def _rand_rotate(self, image:Image):
+    def _rand_rotate(self, image: Image):
         angel = random.randint(0, 360)
         image = self._rotate(image, angel)
         return image
 
-    def _make_char_images(self, string:str, font:ImageFont, color:ImageColor=None, rotate:int=None, resize:bool=False, size:tuple=None):
+    def _make_char_images(self,
+                          string: str,
+                          font: ImageFont,
+                          color: ImageColor = None,
+                          rotate: int = None,
+                          resize: bool = False,
+                          size: tuple = None):
         if not string:
             raise StringIsNoneError()
         else:
-            images = map(lambda c: self._make_char(c, font, rotate=0, color=color, resize=resize, size=size), string)
+            images = map(lambda c: self._make_char(c,
+                                                   font,
+                                                   rotate=0,
+                                                   color=color,
+                                                   resize=resize,
+                                                   size=size), string)
             return list(images)
 
     @property
@@ -134,12 +164,12 @@ class BaseGenerator:
         return ImageColor.getrgb(color)
 
     @staticmethod
-    def _get_color(r:int, g:int, b:int):
+    def _get_color(r: int, g: int, b: int):
         color = 'rgb({R}, {G}, {B})'.format(R=r, G=g, B=b)
         return color
 
     @staticmethod
-    def _get_char_size(font:ImageFont, char:str):
+    def _get_char_size(font: ImageFont, char: str):
         size = font.getsize(char)
         width = size[0] * 2
         height = size[1] * 2
@@ -148,7 +178,7 @@ class BaseGenerator:
         return width, height, width_offset, height_offset
 
     @staticmethod
-    def _rotate(image, angel:int=0):
+    def _rotate(image, angel: int = 0):
         return image.rotate(angel)
 
     @staticmethod
@@ -156,7 +186,7 @@ class BaseGenerator:
         return image.resize(size, resample=Image.ANTIALIAS)
 
     @staticmethod
-    def _rand_resize(image:Image):
+    def _rand_resize(image: Image):
         import math
         ratio = random.random() + 0.5
         width = math.floor(image.size[0] * ratio)
@@ -174,7 +204,7 @@ class BaseGenerator:
         return random.randrange(10, 15)
 
     @staticmethod
-    def _noise_arcs(image, color:ImageColor=None):
+    def _noise_arcs(image, color: ImageColor = None):
         size = image.size
         draw = ImageDraw.Draw(image)
         draw.arc([-20, -20, size[0], 20], 0, 295, fill=color)
@@ -182,14 +212,16 @@ class BaseGenerator:
         draw.line([-20, 0, size[0] + 20, size[1]], fill=color)
 
     @staticmethod
-    def _noise_dots(image:Image, color:ImageColor=None):
+    def _noise_dots(image: Image, color: ImageColor = None):
         size = image.size
         draw = ImageDraw.Draw(image)
         for _ in range(int(size[0] * size[1] * 0.1)):
-            draw.point((random.randint(0, size[0]), random.randint(0, size[1])), fill=color)
+            draw.point((random.randint(0, size[0]),
+                        random.randint(0, size[1])), fill=color)
 
-    def _get_font_path(self, path: Path=None, name: str=None):
-        path = path if path else Path(os.path.join(self._base_dir(), 'fonts', name))
+    def _get_font_path(self, path: Path = None, name: str = None):
+        path = path if path else Path(os.path.join(self._base_dir(), 'fonts',
+                                                   name))
         if path.exists():
             return str(path)
         else:
@@ -198,7 +230,10 @@ class BaseGenerator:
 
 class SinaGenerator(BaseGenerator):
     # https://login.sina.com.cn/cgi/pin.php
-    def make_captcha(self, string: str = None, font_size: int = 48, image_size: tuple = None):
+    def make_captcha(self,
+                     string: str = None,
+                     font_size: int = 48,
+                     image_size: tuple = None):
         captcha = self._make_captcha(string, font_size)
         size = image_size if image_size else self.size
         captcha = self._resize(captcha, size)
@@ -208,14 +243,20 @@ class SinaGenerator(BaseGenerator):
         font_name = 'TruenoBdOlIt.otf'
         font = self._load_font(name=font_name, size=font_size)
         char_images = self._make_char_images(string, font)
-        image = self._composite_char_images(char_images, color=self._get_color(255, 255, 255))
+        image = self._composite_char_images(char_images,
+                                            color=self._get_color(255,
+                                                                  255,
+                                                                  255))
         return image
 
 
 class SimpleGenerator(BaseGenerator):
     FONT = 'AuxinMedium.otf'
 
-    def make_captcha(self, string: str = None, font_size: int = 48, image_size: tuple = None):
+    def make_captcha(self,
+                     string: str = None,
+                     font_size: int = 48,
+                     image_size: tuple = None):
         captcha = self._make_captcha(string, font_size)
         size = image_size if image_size else self.size
         captcha = self._resize(captcha, size)
@@ -224,7 +265,10 @@ class SimpleGenerator(BaseGenerator):
     def _make_captcha(self, string, font_size):
         font = self._load_font(name=self.FONT, size=font_size)
         char_images = self._make_char_images(string, font)
-        image = self._composite_char_images(char_images, color=self._get_color(255, 255, 255))
+        image = self._composite_char_images(char_images,
+                                            color=self._get_color(255,
+                                                                  255,
+                                                                  255))
         return image
 
 
