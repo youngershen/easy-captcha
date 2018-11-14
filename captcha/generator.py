@@ -149,7 +149,7 @@ class BaseGenerator:
         else:
             images = map(lambda c: self._make_char(c,
                                                    font,
-                                                   rotate=0,
+                                                   rotate=rotate,
                                                    color=color,
                                                    resize=resize,
                                                    size=size), string)
@@ -211,6 +211,12 @@ class BaseGenerator:
         draw.line([-20, 20, size[0] + 20, size[1] - 20], fill=color)
         draw.line([-20, 0, size[0] + 20, size[1]], fill=color)
 
+    def _noise_arcs_2(self, image, color: ImageColor = None, angel: int = 10):
+        pass
+
+    def _rand_noise_arcs(self, image, color: ImageColor = None, number: int = 1):
+        pass
+
     @staticmethod
     def _noise_dots(image: Image, color: ImageColor = None):
         size = image.size
@@ -242,7 +248,10 @@ class SinaGenerator(BaseGenerator):
     def _make_captcha(self, string, font_size):
         font_name = 'TruenoBdOlIt.otf'
         font = self._load_font(name=font_name, size=font_size)
-        char_images = self._make_char_images(string, font)
+        char_images = self._make_char_images(string,
+                                             font,
+                                             rotate=None,
+                                             color=self._rand_color)
         image = self._composite_char_images(char_images,
                                             color=self._get_color(255,
                                                                   255,
