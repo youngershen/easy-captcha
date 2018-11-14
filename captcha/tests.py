@@ -31,8 +31,8 @@ class GeneratorTestCase(unittest.TestCase):
         self.assertTrue(font)
 
     def test_make_sina_generator(self):
-        from captcha.generator import SinaGenerator
-        generator = SinaGenerator()
+        from captcha.generator import OriginGenerator
+        generator = OriginGenerator()
         captcha = generator.make_captcha(string='ABCD')
         captcha.save('test-sina.png')
         self.assertTrue(captcha)

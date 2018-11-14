@@ -266,8 +266,6 @@ class BaseGenerator:
     def _rand_point(image):
         x = random.randrange(0, image.size[0])
         y = random.randrange(0, image.size[1])
-        print(x)
-        print(y)
         return x, y
 
     def _rand_rect(self, image):
@@ -290,8 +288,7 @@ class BaseGenerator:
             raise FontNotFoundError()
 
 
-class SinaGenerator(BaseGenerator):
-    # https://login.sina.com.cn/cgi/pin.php
+class OriginGenerator(BaseGenerator):
     def make_captcha(self,
                      string: str = None,
                      font_size: int = 48,
