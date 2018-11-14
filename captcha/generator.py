@@ -214,7 +214,38 @@ class BaseGenerator:
     def _noise_arcs_2(self, image, color: ImageColor = None, angel: int = 10):
         pass
 
-    def _rand_noise_arcs(self, image, color: ImageColor = None, number: int = 1):
+    def _noise_arc(self,
+                   image: Image,
+                   box: list = None,
+                   color: ImageColor = None,
+                   start_angel: int = 180,
+                   stop_angel: int = 0,
+                   width: int = 2):
+
+        box = box if box else self._rand_rect(image)
+        color = color if color else self._rand_color
+        draw = ImageDraw.Draw(image)
+        draw.arc(xy=box,
+                 start=start_angel,
+                 end=stop_angel,
+                 fill=color,
+                 width=width)
+
+    def _rand_noise_arcs(self,
+                         image,
+                         number: int = 1):
+
+        for _ in range(number):
+            start_angel = random.randint(0, 360)
+            stop_angel = random.randint(0, 360)
+            self._noise_arc(image,
+                            start_angel=start_angel,
+                            stop_angel=stop_angel)
+
+    def _noise_line(self):
+        pass
+
+    def _rand_noise_lines(self):
         pass
 
     @staticmethod
@@ -224,6 +255,31 @@ class BaseGenerator:
         for _ in range(int(size[0] * size[1] * 0.1)):
             draw.point((random.randint(0, size[0]),
                         random.randint(0, size[1])), fill=color)
+
+    def _noise_dot(self):
+        pass
+
+    def _rand_noise_dots(self):
+        pass
+
+    @staticmethod
+    def _rand_point(image):
+        x = random.randrange(0, image.size[0])
+        y = random.randrange(0, image.size[1])
+        print(x)
+        print(y)
+        return x, y
+
+    def _rand_rect(self, image):
+        x0, y0 = self._rand_point(image)
+        x1, y1 = self._rand_point(image)
+
+        if x0 > x1:
+            x0, x1 = x1, x0
+        if y0 > y1:
+            y0, y1 = y1, y0
+
+        return x0, y0, x1, y1
 
     def _get_font_path(self, path: Path = None, name: str = None):
         path = path if path else Path(os.path.join(self._base_dir(), 'fonts',
@@ -256,6 +312,8 @@ class SinaGenerator(BaseGenerator):
                                             color=self._get_color(255,
                                                                   255,
                                                                   255))
+
+        self._rand_noise_arcs(image, number=3)
         return image
 
 
