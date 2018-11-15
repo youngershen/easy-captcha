@@ -45,6 +45,9 @@ class BaseGenerator:
     def __init__(self):
         self.size = (100, 50)
 
+    def _get_font(self):
+        raise NotImplementedError()
+
     def _composite_char_images(self, images: list, color: ImageColor):
         width = 0
         height = 0
@@ -297,6 +300,8 @@ class BaseGenerator:
 
 
 class DefaultGenerator(BaseGenerator):
+    FONT = 'TruenoBdOlIt.otf'
+
     def make_captcha(self,
                      string: str = None,
                      font_size: int = 48,
@@ -307,8 +312,7 @@ class DefaultGenerator(BaseGenerator):
         return captcha
 
     def _make_captcha(self, string, font_size):
-        font_name = 'TruenoBdOlIt.otf'
-        font = self._load_font(name=font_name, size=font_size)
+        font = self._get_font(font_size)
         char_images = self._make_char_images(string,
                                              font,
                                              rotate=None,
@@ -320,6 +324,10 @@ class DefaultGenerator(BaseGenerator):
 
         self._rand_noise_lines(image, number=3)
         return image
+
+    def _get_font(self, size: int):
+        font = self._load_font(name=self.FONT, size=size)
+        return font
 
 
 class SimpleGenerator(BaseGenerator):
@@ -335,7 +343,7 @@ class SimpleGenerator(BaseGenerator):
         return captcha
 
     def _make_captcha(self, string, font_size):
-        font = self._load_font(name=self.FONT, size=font_size)
+        font = self._get_font(font_size)
         char_images = self._make_char_images(string, font, rotate=0)
         image = self._composite_char_images(char_images,
                                             color=self._get_color(255,
@@ -344,6 +352,10 @@ class SimpleGenerator(BaseGenerator):
 
         self._rand_noise_dots(image, number=5)
         return image
+
+    def _get_font(self, size: int):
+        font = self._load_font(name=self.FONT, size=size)
+        return font
 
 
 class SimpleChineseGenerator(SimpleGenerator):
