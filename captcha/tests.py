@@ -30,11 +30,11 @@ class GeneratorTestCase(unittest.TestCase):
         font = self.base_generator._load_rand_font()
         self.assertTrue(font)
 
-    def test_make_sina_generator(self):
-        from captcha.generator import OriginGenerator
-        generator = OriginGenerator()
+    def test_make_default_generator(self):
+        from captcha.generator import DefaultGenerator
+        generator = DefaultGenerator()
         captcha = generator.make_captcha(string='ABCD')
-        captcha.save('test-sina.png')
+        captcha.save('test-default.png')
         self.assertTrue(captcha)
 
     def test_make_simple_captcha(self):

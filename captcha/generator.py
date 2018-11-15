@@ -203,17 +203,6 @@ class BaseGenerator:
     def _rand_padding():
         return random.randrange(10, 15)
 
-    @staticmethod
-    def _noise_arcs(image, color: ImageColor = None):
-        size = image.size
-        draw = ImageDraw.Draw(image)
-        draw.arc([-20, -20, size[0], 20], 0, 295, fill=color)
-        draw.line([-20, 20, size[0] + 20, size[1] - 20], fill=color)
-        draw.line([-20, 0, size[0] + 20, size[1]], fill=color)
-
-    def _noise_arcs_2(self, image, color: ImageColor = None, angel: int = 10):
-        pass
-
     def _noise_arc(self,
                    image: Image,
                    box: list = None,
@@ -242,25 +231,48 @@ class BaseGenerator:
                             start_angel=start_angel,
                             stop_angel=stop_angel)
 
-    def _noise_line(self):
-        pass
+    def _noise_line(self, image: Image,
+                    xy: list = None,
+                    color: ImageColor = None,
+                    width: int = 5,
+                    joint=None):
 
-    def _rand_noise_lines(self):
-        pass
-
-    @staticmethod
-    def _noise_dots(image: Image, color: ImageColor = None):
-        size = image.size
+        box = xy if xy else self._rand_rect(image)
+        color = color if color else self._rand_color
         draw = ImageDraw.Draw(image)
-        for _ in range(int(size[0] * size[1] * 0.1)):
-            draw.point((random.randint(0, size[0]),
-                        random.randint(0, size[1])), fill=color)
+        draw.line(box, fill=color, width=width, joint=None)
 
-    def _noise_dot(self):
-        pass
+    def _rand_noise_lines(self, image: Image, number: int = 1):
+        for _ in range(number):
+            self._noise_line(image)
 
-    def _rand_noise_dots(self):
-        pass
+    def _noise_dot(self,
+                   image: Image,
+                   point: tuple = None,
+                   color: ImageColor = None,
+                   diameter: int = 10):
+
+        point = point if point else self._rand_point(image)
+        color = color if color else self._rand_color
+        draw = ImageDraw.Draw(image)
+        # draw.point(box, fill=color)
+        import math
+        x = math.ceil(point[0] - diameter / 2)
+        y = math.ceil(point[1] - diameter / 2)
+
+        dots = []
+        for i in range(diameter):
+            for n in range(diameter):
+                dots.append(x + i)
+                dots.append(y + n)
+
+        draw.point(dots, fill=color)
+
+    def _rand_noise_dots(self,
+                         image: Image,
+                         number: int = 1):
+        for _ in range(number):
+            self._noise_dot(image)
 
     @staticmethod
     def _rand_point(image):
@@ -288,7 +300,7 @@ class BaseGenerator:
             raise FontNotFoundError()
 
 
-class OriginGenerator(BaseGenerator):
+class DefaultGenerator(BaseGenerator):
     def make_captcha(self,
                      string: str = None,
                      font_size: int = 48,
@@ -310,7 +322,7 @@ class OriginGenerator(BaseGenerator):
                                                                   255,
                                                                   255))
 
-        self._rand_noise_arcs(image, number=3)
+        self._rand_noise_dots(image, number=10)
         return image
 
 
@@ -328,11 +340,13 @@ class SimpleGenerator(BaseGenerator):
 
     def _make_captcha(self, string, font_size):
         font = self._load_font(name=self.FONT, size=font_size)
-        char_images = self._make_char_images(string, font)
+        char_images = self._make_char_images(string, font, rotate=0)
         image = self._composite_char_images(char_images,
                                             color=self._get_color(255,
                                                                   255,
                                                                   255))
+        
+        self._rand_noise_dots(image, number=5)
         return image
 
 
