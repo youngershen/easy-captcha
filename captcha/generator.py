@@ -345,7 +345,7 @@ class SimpleGenerator(BaseGenerator):
                                             color=self._get_color(255,
                                                                   255,
                                                                   255))
-        
+
         self._rand_noise_dots(image, number=5)
         return image
 
