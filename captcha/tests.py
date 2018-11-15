@@ -50,7 +50,7 @@ class GeneratorTestCase(unittest.TestCase):
         captcha = captcha.make_captcha(string='我爱中国')
         captcha.save('test-simple-chinese.png')
         self.assertTrue(captcha)
-        
+
 
 if __name__ == "__main__":
     unittest.main()

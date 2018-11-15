@@ -4,9 +4,6 @@
 .idea
 .vscode
 *.log
-*.png
-*.jpeg
-*.gif
 .coverage
 venv
 coverage

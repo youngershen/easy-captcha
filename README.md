@@ -1,17 +1,45 @@
-v1
+# Easy Captcha
 
-1. 输出文件 （jpeg, png, gif）
-2. 输出 PIL 对象
-3. 自定义图像大小
-4. 自定义字体大小
-5. 预置 GIF 动画混淆样式
-6. 预置静态图像混淆样式
-7. 自定义 GIF 混淆样式
-8. 自定义静态图像混淆样式
-9. 可设置混淆程度
-10. 自定义字体 (自定义多种字体,每次随机使用一个,每个验证码字符的字体都是随机的)
+## What is it
 
-v2
+this is a very easy to use python package that helps you to generate the image captchas, in the help of this package you
+can easily make your own captcha design rather than the default design.
 
-1. 支持非英文系文字
-2. 支持输出语音(中，英)文件
+## Installation
+
+* pip install easy-captcha
+* python setup.py install
+
+## Quick start
+
+```python
+    from captcha.generator import DefaultGenerator
+    generator = DefaultGenerator()
+    captcha = generator.make_captcha(string='ABCD')
+    captcha.save('test-default.png')
+```
+
+the make_captcha method return a PIL Image object, you
+can save it with your any type you wanted, easy to use.
+
+## Samples
+
+    captcha.generator.DefaultGenerator
+
+![Default](assets/test-default.png)
+
+    from captcha.generator import SimpleGenerator
+
+![Simple](assets/test-simple.png)
+
+    from captcha.generator import SimpleChineseGenerator
+
+![Simple](assets/test-simple-chinese.png)
+
+## Advance topic
+
+### Custom Font
+
+### Custom captcha generator
+
+## Future support feature
