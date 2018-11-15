@@ -1,0 +1,17 @@
+language: python
+
+python:
+  - "3.6.5"
+  - "3.7.0"
+
+install:
+  - pip install -e .
+  - pip install pytest
+  - pip install pytest-cov
+  - pip install codecov
+
+script:
+  - pytest --cov-report=html --cov-config=.coveragerc  --cov=./
+
+after_success:
+  - codecov

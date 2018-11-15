@@ -1,7 +1,7 @@
 # PROJECT : easy-captcha
 # TIME : 18-7-30 下午4:00
 # AUTHOR : Younger Shen
-# EMAIL : younger.shen@hotmail.com
+# EMAIL : youngershen64@gmail.com
 # CELL : 13811754531
 # WECHAT : 13811754531
 import os
@@ -15,10 +15,6 @@ class BaseError(Exception):
 
     def __str__(self):
         return self.message
-
-
-class CreateCaptchaFailedError(BaseError):
-    message = 'create captcha image failed.'
 
 
 class FontNotFoundError(BaseError):
@@ -322,7 +318,7 @@ class DefaultGenerator(BaseGenerator):
                                                                   255,
                                                                   255))
 
-        self._rand_noise_dots(image, number=10)
+        self._rand_noise_lines(image, number=3)
         return image
 
 

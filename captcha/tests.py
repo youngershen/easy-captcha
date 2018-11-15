@@ -1,7 +1,7 @@
 # PROJECT : hhcms
 # TIME : 18-7-30 下午4:03
 # AUTHOR : Younger Shen
-# EMAIL : younger.shen@hotmail.com
+# EMAIL : youngershen64@gmail.com
 # CELL : 13811754531
 # WECHAT : 13811754531
 import os
