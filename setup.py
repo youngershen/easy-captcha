@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='easy-captcha',
 
-    version='0.1',
+    version='0.2',
 
     description='a very easy to use captcha image generator.',
 
@@ -34,13 +34,12 @@ setup(
         # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
-        'Framework :: Pillow',
         'License :: OSI Approved :: MIT License',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
 
     # What does your project relate to?
-    keywords='a very easy to use captcha image generator.',
+    keywords='captcha, image',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().

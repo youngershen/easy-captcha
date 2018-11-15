@@ -13,7 +13,7 @@ coverage
 build
 dist
 htmlcov
-easy-captcha.egg-info
+easy_captcha.egg-info
 __pycache__
 .pytest_cache
 html
