@@ -34,21 +34,21 @@ class GeneratorTestCase(unittest.TestCase):
         from captcha.generator import DefaultGenerator
         generator = DefaultGenerator()
         captcha = generator.make_captcha(string='ABCD')
-        captcha.save('test-default.png')
+        captcha.save('assets/test-default.png')
         self.assertTrue(captcha)
 
     def test_make_simple_captcha(self):
         from captcha.generator import SimpleGenerator
         captcha = SimpleGenerator()
         captcha = captcha.make_captcha(string='ABCD')
-        captcha.save('test-simple.png')
+        captcha.save('assets/test-simple.png')
         self.assertTrue(captcha)
 
     def test_make_simple_chinese_captcha(self):
         from captcha.generator import SimpleChineseGenerator
         captcha = SimpleChineseGenerator()
         captcha = captcha.make_captcha(string='我爱中国')
-        captcha.save('test-simple-chinese.png')
+        captcha.save('assets/test-simple-chinese.png')
         self.assertTrue(captcha)
 
 
