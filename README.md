@@ -5,6 +5,11 @@
 this is a very easy to use python package that helps you to generate the image captchas, in the help of this package you
 can easily make your own captcha design rather than the default design.
 
+## Python supported
+
+* CPYTHON 3.6
+* CPYTHON 3.7
+
 ## Installation
 
 * pip install easy-captcha
