@@ -1,5 +1,15 @@
 # Easy Captcha
 
+![Travis](https://img.shields.io/travis/youngershen/easy-captcha.svg)
+![codecov](https://codecov.io/gh/youngershen/django-easy-validator/branch/master/graph/badge.svg)
+![PyPI - License](https://img.shields.io/pypi/l/easy-captcha.svg)
+![PyPI](https://img.shields.io/pypi/v/easy-captcha.svg)
+![PyPI - Wheel](https://img.shields.io/pypi/wheel/easy-captcha.svg)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/easy-captcha.svg)
+![GitHub last commit](https://img.shields.io/github/last-commit/youngershen/easy-captcha.svg)
+
+------
+
 ## What is it
 
 this is a very easy to use python package that helps you to generate the image captchas, in the help of this package you
