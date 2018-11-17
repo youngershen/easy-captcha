@@ -39,7 +39,10 @@ class BaseGenerator:
     CHARSET_ASCII = 2
     CHARSET_OTHER = 3
 
-    def make_captcha(self, string: str = None):
+    def make_captcha(self,
+                     string: str = None,
+                     font_size: int = 48,
+                     image_size: tuple = None):
         raise NotImplementedError()
 
     def __init__(self):

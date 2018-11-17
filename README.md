@@ -53,7 +53,7 @@ can save it with your any type you wanted, easy to use.
 
 ## Advance topic
 
-### Custom Font
+### Custom font
 
 ```python
     from pathlib import Path
@@ -69,6 +69,53 @@ can save it with your any type you wanted, easy to use.
 if you just want to use your font instead of the default font,
 just reimplement the _get_font method, make the method return
 your font.
+
+### Custom captcha generator
+
+if you want to custom the captcha generator, you just need to subclass the **captcha.generator.BaseGenerator** class. when
+you subclass the **BaseGenerator** then you could use the method
+inside the **BaseGenerator** to make your own style captcha genrator.
+
+if the default drawing methods are not well enough for you, you
+could just use the **pillow** staff to make your own generator.
+this whole package is based on **pillow**, so just feel free to
+modify it.
+
+for more details just check the code below. the important thing
+is that when you subclass the **BaseGenerator**, you just need
+to implement the **make_captcha** method and **_get_font** method.
+
+```python
+class DefaultGenerator(BaseGenerator):
+    FONT = 'TruenoBdOlIt.otf'
+
+    def make_captcha(self,
+                     string: str = None,
+                     font_size: int = 48,
+                     image_size: tuple = None):
+        captcha = self._make_captcha(string, font_size)
+        size = image_size if image_size else self.size
+        captcha = self._resize(captcha, size)
+        return captcha
+
+    def _make_captcha(self, string, font_size):
+        font = self._get_font(font_size)
+        char_images = self._make_char_images(string,
+                                             font,
+                                             rotate=None,
+                                             color=self._rand_color)
+        image = self._composite_char_images(char_images,
+                                            color=self._get_color(255,
+                                                                  255,
+                                                                  255))
+
+        self._rand_noise_lines(image, number=3)
+        return image
+
+    def _get_font(self, size: int):
+        font = self._load_font(name=self.FONT, size=size)
+        return font
+```
 
 ## Future support feature
 
