@@ -39,15 +39,15 @@ can save it with your any type you wanted, easy to use.
 
 ## Samples
 
-    captcha.generator.DefaultGenerator
+    captcha.DefaultGenerator
 
 ![Default](assets/test-default.png)
 
-    from captcha.generator import SimpleGenerator
+    from captcha import SimpleGenerator
 
 ![Simple](assets/test-simple.png)
 
-    from captcha.generator import SimpleChineseGenerator
+    from captcha import SimpleChineseGenerator
 
 ![Simple](assets/test-simple-chinese.png)
 

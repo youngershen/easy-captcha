@@ -31,21 +31,21 @@ class GeneratorTestCase(unittest.TestCase):
         self.assertTrue(font)
 
     def test_make_default_generator(self):
-        from captcha.generator import DefaultGenerator
+        from captcha import DefaultGenerator
         generator = DefaultGenerator()
         captcha = generator.make_captcha(string='ABCD')
         captcha.save('assets/test-default.png')
         self.assertTrue(captcha)
 
     def test_make_simple_captcha(self):
-        from captcha.generator import SimpleGenerator
+        from captcha import SimpleGenerator
         captcha = SimpleGenerator()
         captcha = captcha.make_captcha(string='ABCD')
         captcha.save('assets/test-simple.png')
         self.assertTrue(captcha)
 
     def test_make_simple_chinese_captcha(self):
-        from captcha.generator import SimpleChineseGenerator
+        from captcha import SimpleChineseGenerator
         captcha = SimpleChineseGenerator()
         captcha = captcha.make_captcha(string='我爱中国')
         captcha.save('assets/test-simple-chinese.png')
