@@ -9,11 +9,13 @@
 from .generator import BaseGenerator, \
                        SimpleGenerator, \
                        DefaultGenerator, \
-                       SimpleChineseGenerator
+                       SimpleChineseGenerator, \
+                       ContortGenerator
 
 __all__ = [
     'BaseGenerator',
     'SimpleGenerator',
     'DefaultGenerator',
-    'SimpleChineseGenerator'
+    'SimpleChineseGenerator',
+    'ContortGenerator'
 ]
