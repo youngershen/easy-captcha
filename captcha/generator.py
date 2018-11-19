@@ -425,6 +425,6 @@ class ContortGenerator(BaseGenerator):
         image = image.transform(image.size, Image.AFFINE, data=[1, 2, 3, 4, 5, 6])
         return image
 
-    def _get_font(self, size: int):
+    def _get_font(self, size: int=48):
         font = self._load_font(name=self.FONT, size=size)
         return font
