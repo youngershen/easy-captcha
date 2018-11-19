@@ -48,7 +48,7 @@ class BaseGenerator:
     def __init__(self):
         self.size = (100, 50)
 
-    def _get_font(self):
+    def _get_font(self, size: int=48):
         raise NotImplementedError()
 
     def _composite_char_images(self, images: list, color: ImageColor):
@@ -242,7 +242,7 @@ class BaseGenerator:
         box = xy if xy else self._rand_rect(image)
         color = color if color else self._rand_color
         draw = ImageDraw.Draw(image)
-        draw.line(box, fill=color, width=width, joint=None)
+        draw.line(box, fill=color, width=width, joint=joint)
 
     def _rand_noise_lines(self, image: Image, number: int = 1):
         for _ in range(number):
@@ -328,7 +328,7 @@ class DefaultGenerator(BaseGenerator):
         self._rand_noise_lines(image, number=3)
         return image
 
-    def _get_font(self, size: int):
+    def _get_font(self, size: int=48):
         font = self._load_font(name=self.FONT, size=size)
         return font
 
@@ -356,7 +356,7 @@ class SimpleGenerator(BaseGenerator):
         self._rand_noise_dots(image, number=5)
         return image
 
-    def _get_font(self, size: int):
+    def _get_font(self, size: int=48):
         font = self._load_font(name=self.FONT, size=size)
         return font
 
@@ -422,7 +422,7 @@ class ContortGenerator(BaseGenerator):
 
         image = image.crop(image.getbbox())
         # transform
-        image = image.transform(image.size, Image.AFFINE, data=[1,2,3,4,5,6])
+        image = image.transform(image.size, Image.AFFINE, data=[1, 2, 3, 4, 5, 6])
         return image
 
     def _get_font(self, size: int):
