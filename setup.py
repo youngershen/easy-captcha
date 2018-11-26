@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='easy-captcha',
 
-    version='1.2',
+    version='1.3',
 
     description='a very easy to use captcha image generator.',
 
@@ -44,6 +44,10 @@ setup(
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
     packages=find_packages(),
+
+    package_data={
+        '': ['*.ttf', '*.otf'],
+    },
 
     install_requires=[
         'pillow',
