@@ -119,7 +119,8 @@ class DefaultGenerator(BaseGenerator):
 
 ## Future support feature
 
-* GIF format support.
-* Audio format support.
-* Django framework intergration.
-* Flask framework intergration.
+- [x] Basic png captcha support.
+- [ ] GIF format support.
+- [ ] Audio format support.
+- [x] Django framework intergration, see [this](https://github.com/youngershen/django-easy-captcha).
+- [ ] Flask framework intergration.
