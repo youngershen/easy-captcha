@@ -39,7 +39,7 @@ can save it with your any type you wanted, easy to use.
 
 ## Samples
 
-    captcha.DefaultGenerator
+    from captcha import DefaultGenerator
 
 ![Default](assets/test-default.png)
 

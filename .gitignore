@@ -6,6 +6,7 @@
 *.log
 .coverage
 venv
+assets
 coverage
 build
 dist
