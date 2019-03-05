@@ -23,8 +23,6 @@ class GeneratorTestCase(unittest.TestCase):
     @staticmethod
     def make_assets_dir():
         p = os.path.join(path, 'assets')
-        print(p)
-        print('fuck')
         if not os.path.isdir(p):
             os.mkdir(p)
 
