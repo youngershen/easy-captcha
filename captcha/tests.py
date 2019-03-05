@@ -18,10 +18,19 @@ class GeneratorTestCase(unittest.TestCase):
         from captcha.generator import BaseGenerator
         self.base_dir = os.path.dirname(__file__)
         self.base_generator = BaseGenerator()
+        self.make_assets_dir()
+
+    @staticmethod
+    def make_assets_dir():
+        p = os.path.join(path, 'assets')
+        print(p)
+        print('fuck')
+        if not os.path.isdir(p):
+            os.mkdir(p)
 
     def test_load_font(self):
-        path = Path(os.path.join(self.base_dir, 'fonts/RexBoldInline.otf'))
-        font = self.base_generator._load_font(path=path)
+        p = Path(os.path.join(self.base_dir, 'fonts/RexBoldInline.otf'))
+        font = self.base_generator._load_font(path=p)
         self.assertTrue(font)
 
         font = self.base_generator._load_font(name='RexBoldInline.otf')
