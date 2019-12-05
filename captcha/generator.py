@@ -50,7 +50,7 @@ class BaseGenerator:
     def __init__(self):
         self.size = (100, 50)
 
-    def _get_font(self, size: int=48):
+    def _get_font(self, size: int = 48):
         raise NotImplementedError()
 
     def _composite_char_images(self, images: list, color: ImageColor):
@@ -330,7 +330,7 @@ class DefaultGenerator(BaseGenerator):
         self._rand_noise_lines(image, number=3)
         return image
 
-    def _get_font(self, size: int=48):
+    def _get_font(self, size: int = 48):
         font = self._load_font(name=self.FONT, size=size)
         return font
 
@@ -358,7 +358,7 @@ class SimpleGenerator(BaseGenerator):
         self._rand_noise_dots(image, number=5)
         return image
 
-    def _get_font(self, size: int=48):
+    def _get_font(self, size: int = 48):
         font = self._load_font(name=self.FONT, size=size)
         return font
 
