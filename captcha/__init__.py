@@ -2,9 +2,10 @@
 # FILE : __init__.py
 # TIME : 2018-11-17 14:58:14
 # AUTHOR : Younger Shen
-# EMAIL : youngershen64@gmail.com
-# CELL : +8613811754531
+# EMAIL : younger.x.shen@gmail.com
+# CELL : 13811754531
 # WECHAT : 13811754531
+# https://github.com/youngershen/
 
 from .generator import BaseGenerator, \
                        SimpleGenerator, \

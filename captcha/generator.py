@@ -1,9 +1,11 @@
 # PROJECT : easy-captcha
 # TIME : 18-7-30 下午4:00
 # AUTHOR : Younger Shen
-# EMAIL : youngershen64@gmail.com
+# EMAIL : younger.x.shen@gmail.com
 # CELL : 13811754531
 # WECHAT : 13811754531
+# https://github.com/youngershen/
+
 import os
 import random
 from pathlib import Path

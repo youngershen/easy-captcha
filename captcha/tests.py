@@ -1,9 +1,11 @@
 # PROJECT : hhcms
 # TIME : 18-7-30 下午4:03
 # AUTHOR : Younger Shen
-# EMAIL : youngershen64@gmail.com
+# EMAIL : younger.x.shen@gmail.com
 # CELL : 13811754531
 # WECHAT : 13811754531
+# https://github.com/youngershen/
+
 import os
 import sys
 from pathlib import Path
