@@ -27,7 +27,7 @@ class StringIsNoneError(BaseError):
 
 class BaseGenerator:
     FONT_SIZE = 150
-    IMAGE_SIZE = (200, 100)
+    IMAGE_SIZE = (100, 50)
 
     FONTS = [
         'RexBoldInline.otf',
