@@ -26,6 +26,9 @@ class StringIsNoneError(BaseError):
 
 
 class BaseGenerator:
+    FONT_SIZE = 150
+    IMAGE_SIZE = (200, 100)
+
     FONTS = [
         'RexBoldInline.otf',
         'TruenoBdOlIt.otf',
@@ -41,14 +44,14 @@ class BaseGenerator:
 
     def make_captcha(self,
                      string: str = None,
-                     font_size: int = 48,
+                     font_size: int = None,
                      image_size: tuple = None):
         raise NotImplementedError()
 
     def __init__(self):
-        self.size = (100, 50)
+        self.size = (200, 100)
 
-    def _get_font(self, size: int=48):
+    def _get_font(self, size: int = 100):
         raise NotImplementedError()
 
     def _composite_char_images(self, images: list, color: ImageColor):
@@ -307,8 +310,12 @@ class DefaultGenerator(BaseGenerator):
 
     def make_captcha(self,
                      string: str = None,
-                     font_size: int = 48,
+                     font_size: int = None,
                      image_size: tuple = None):
+
+        font_size = font_size if font_size else self.FONT_SIZE
+        image_size = image_size if image_size else self.IMAGE_SIZE
+
         captcha = self._make_captcha(string, font_size)
         size = image_size if image_size else self.size
         captcha = self._resize(captcha, size)
@@ -328,7 +335,7 @@ class DefaultGenerator(BaseGenerator):
         self._rand_noise_lines(image, number=3)
         return image
 
-    def _get_font(self, size: int=48):
+    def _get_font(self, size: int = 100):
         font = self._load_font(name=self.FONT, size=size)
         return font
 
@@ -338,8 +345,11 @@ class SimpleGenerator(BaseGenerator):
 
     def make_captcha(self,
                      string: str = None,
-                     font_size: int = 48,
+                     font_size: int = None,
                      image_size: tuple = None):
+        font_size = font_size if font_size else self.FONT_SIZE
+        image_size = image_size if image_size else self.IMAGE_SIZE
+
         captcha = self._make_captcha(string, font_size)
         size = image_size if image_size else self.size
         captcha = self._resize(captcha, size)
@@ -356,21 +366,13 @@ class SimpleGenerator(BaseGenerator):
         self._rand_noise_dots(image, number=5)
         return image
 
-    def _get_font(self, size: int=48):
+    def _get_font(self, size: int = None):
         font = self._load_font(name=self.FONT, size=size)
         return font
 
 
 class SimpleChineseGenerator(SimpleGenerator):
     FONT = 'MicroSoftYaHei.ttf'
-
-
-class CircleGenerator(BaseGenerator):
-    def make_captcha(self):
-        pass
-
-    def _get_font(self):
-        pass
 
 
 class ContortGenerator(BaseGenerator):
