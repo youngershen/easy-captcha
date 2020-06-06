@@ -332,12 +332,24 @@ class DefaultGenerator(BaseGenerator):
                                                                   255,
                                                                   255))
 
-        self._rand_noise_lines(image, number=3)
+        image = self._rand_noise(image)
         return image
 
     def _get_font(self, size: int = 100):
         font = self._load_font(name=self.FONT, size=size)
         return font
+
+    def _rand_noise(self, image):
+        rand_lines = random.randint(1, 5)
+        self._rand_noise_lines(image, rand_lines)
+
+        rand_dots = random.randint(1, 5)
+        self._rand_noise_dots(image, rand_dots)
+
+        rand_arcs = random.randint(1, 5)
+        self._rand_noise_arcs(image, rand_arcs)
+
+        return image
 
 
 class SimpleGenerator(BaseGenerator):
@@ -363,7 +375,6 @@ class SimpleGenerator(BaseGenerator):
                                                                   255,
                                                                   255))
 
-        self._rand_noise_dots(image, number=5)
         return image
 
     def _get_font(self, size: int = None):
