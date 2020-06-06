@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='easy-captcha',
 
-    version='1.3',
+    version='1.3.1',
 
     description='a very easy to use captcha image generator.',
 
