@@ -436,9 +436,17 @@ class ContortGenerator(BaseGenerator):
                 image = self._rand_resize(image)
 
         image = image.crop(image.getbbox())
-        # transform
-        image = image.transform(image.size, Image.AFFINE, data=[1, 2, 3, 4, 5, 6])
-        return image
+
+        width, height = image.size
+        m = -0.5
+        xshift = abs(m) * width
+        new_width = width + int(round(xshift))
+        img = image.transform((new_width, height),
+                              Image.AFFINE,
+                              (1, m, -xshift if m > 0 else 0, 0, 1, 0),
+                              Image.BICUBIC)
+
+        return img
 
     def _get_font(self, size: int = 48):
         font = self._load_font(name=self.FONT, size=size)
