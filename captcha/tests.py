@@ -47,7 +47,7 @@ class GeneratorTestCase(unittest.TestCase):
     def test_make_simple_captcha(self):
         from captcha import SimpleGenerator
         captcha = SimpleGenerator()
-        captcha = captcha.make_captcha(string='ABCD')
+        captcha = captcha.make_captcha(string='ABCDEFG')
         captcha.save('assets/test-simple.png')
         self.assertTrue(captcha)
 
@@ -58,12 +58,12 @@ class GeneratorTestCase(unittest.TestCase):
         captcha.save('assets/test-simple-chinese.png')
         self.assertTrue(captcha)
 
-    def test_make_controt_captcha(self):
-        from captcha import ContortGenerator
-        captcha = ContortGenerator()
-        captcha = captcha.make_captcha(string='ABCD')
-        captcha.save('assets/test-contront.png')
-        self.assertTrue(captcha)
+    # def test_make_controt_captcha(self):
+    #     from captcha import ContortGenerator
+    #     captcha = ContortGenerator()
+    #     captcha = captcha.make_captcha(string='ABCD')
+    #     captcha.save('assets/test-contront.png')
+    #     self.assertTrue(captcha)
 
 
 if __name__ == "__main__":
