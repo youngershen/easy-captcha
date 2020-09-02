@@ -8,13 +8,15 @@
 # https://github.com/youngershen/
 
 from .generator import BaseGenerator, \
-                       SimpleGenerator, \
-                       DefaultGenerator, \
-                       SimpleChineseGenerator
+    SimpleGenerator, \
+    DefaultGenerator, \
+    SimpleChineseGenerator, \
+    ContortGenerator
 
 __all__ = [
     'BaseGenerator',
     'SimpleGenerator',
     'DefaultGenerator',
-    'SimpleChineseGenerator'
+    'SimpleChineseGenerator',
+    'ContortGenerator'
 ]

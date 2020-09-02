@@ -386,3 +386,61 @@ class SimpleGenerator(BaseGenerator):
 
 class SimpleChineseGenerator(SimpleGenerator):
     FONT = 'MicroSoftYaHei.ttf'
+
+
+class ContortGenerator(BaseGenerator):
+    FONT = 'AuxinMedium.otf'
+
+    def make_captcha(self,
+                     string: str = None,
+                     font_size: int = 48,
+                     image_size: tuple = None):
+        captcha = self._make_captcha(string, font_size)
+        size = image_size if image_size else self.size
+        captcha = self._resize(captcha, size)
+        return captcha
+
+    def _make_captcha(self, string, font_size):
+        font = self._get_font(font_size)
+        char_images = self._make_char_images(string, font, rotate=0)
+        image = self._composite_char_images(char_images,
+                                            color=self._get_color(255,
+                                                                  255,
+                                                                  255))
+
+        return image
+
+    def _make_char(self,
+                   char: str,
+                   font: ImageFont,
+                   color: ImageColor = None,
+                   rotate: int = None,
+                   resize: bool = False,
+                   size: tuple = None):
+
+        w, h, wo, ho = self._get_char_size(font, char)
+        image = Image.new(mode='RGBA', size=(w, h))
+        draw = ImageDraw.Draw(image)
+        color = color if color else self._rand_color
+        draw.text((wo, ho), char, font=font, fill=color)
+
+        if rotate is not None:
+            image = self._rotate(image, rotate)
+        else:
+            image = self._rand_rotate(image)
+
+        if resize:
+            if size:
+                image = self._resize(image, size)
+            else:
+                image = self._rand_resize(image)
+
+        image = image.crop(image.getbbox())
+        # transform
+        image = image.transform(image.size, Image.AFFINE, data=[1, 2, 3, 4, 5, 6])
+        return image
+
+    def _get_font(self, size: int = 48):
+        font = self._load_font(name=self.FONT, size=size)
+        return font
+
