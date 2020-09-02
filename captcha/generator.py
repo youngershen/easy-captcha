@@ -1,9 +1,11 @@
 # PROJECT : easy-captcha
 # TIME : 18-7-30 下午4:00
 # AUTHOR : Younger Shen
-# EMAIL : youngershen64@gmail.com
+# EMAIL : younger.x.shen@gmail.com
 # CELL : 13811754531
 # WECHAT : 13811754531
+# https://github.com/youngershen/
+
 import os
 import random
 from pathlib import Path
@@ -51,7 +53,7 @@ class BaseGenerator:
     def __init__(self):
         self.size = (200, 100)
 
-    def _get_font(self, size: int = 100):
+    def _get_font(self, size: int = 48):
         raise NotImplementedError()
 
     def _composite_char_images(self, images: list, color: ImageColor):
@@ -335,7 +337,7 @@ class DefaultGenerator(BaseGenerator):
         image = self._rand_noise(image)
         return image
 
-    def _get_font(self, size: int = 100):
+    def _get_font(self, size: int = 48):
         font = self._load_font(name=self.FONT, size=size)
         return font
 
